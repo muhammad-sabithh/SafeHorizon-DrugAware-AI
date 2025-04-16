@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SafeHorizon - Risk Level Predictor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #fef9ff);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 15px;
+            color: #333;
+        }
+
+        select, input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        input[type="submit"] {
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 25px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #1e40af;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+            color: #1c1c1c;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>SafeHorizon - Drug Risk Level Predictor</h2>
+
+    <form action="/predict" method="post">
+        <label>Painkiller Use Recency</label>
+        <select name="Painkiller_Use_Recency">
+            <option value="0">Never Used</option>
+            <option value="1">More than a year ago</option>
+            <option value="2">6-12 months ago</option>
+            <option value="3">1-6 months ago</option>
+            <option value="4">Past month</option>
+            <option value="5">Last 2 weeks</option>
+            <option value="6">Last week</option>
+            <option value="7">Yesterday</option>
+            <option value="8">Today</option>
+            <option value="9">Daily</option>
+            <option value="10">Multiple times a day</option>
+        </select>
+
+        <label>Mental Health - Frequency of Negative Thoughts</label>
+        <select name="Mental_Health_Think">
+            {% for i in range(1,11) %}
+                <option value="{{ i }}">{{ i }} ({{ 'Low' if i <= 3 else 'Medium' if i <= 7 else 'High' }})</option>
+            {% endfor %}
+        </select>
+
+        <label>Dependent on Prescription Pills</label>
+        <select name="Dependent_On_Prescription_Pills">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Age Group</label>
+        <select name="Age_Group">
+            <option value="1">12-17</option>
+            <option value="2">18-25</option>
+            <option value="3">26-34</option>
+            <option value="4">35-49</option>
+            <option value="5">50+</option>
+            <option value="6">Unknown</option>
+        </select>
+
+        <label>Highest Education Level</label>
+        <select name="Education_Highest_Category">
+            <option value="1">Less than High School</option>
+            <option value="2">High School Graduate</option>
+            <option value="3">Some College</option>
+            <option value="4">Bachelor's Degree</option>
+            <option value="5">Post Graduate</option>
+        </select>
+
+        <label>Ever Used Pain Relievers Non-Medically</label>
+        <select name="Pain_Relievers_Non_Medical_Lifetime_Use">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Self-Rated Health Status</label>
+        <select name="health.1">
+            <option value="1">Excellent</option>
+            <option value="2">Very Good</option>
+            <option value="3">Good</option>
+            <option value="4">Fair</option>
+            <option value="5">Poor</option>
+        </select>
+
+        <label>Gender</label>
+        <select name="Gender">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>
+
+        <label>Currently Using Any Drug</label>
+        <select name="Currently_Using_Drugs">
+            <option value="0">No</option>
+            <option value="1">Yes</option>
+        </select>
+
+        <label>Total Drug Use Days (last 30 days)</label>
+        <select name="total_drug_use_days">
+            {% for i in range(0, 31) %}
+                <option value="{{ i }}">{{ i }} days</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Predict Risk Level">
+    </form>
+
+    {% if prediction_text %}
+        <div class="result"><h3>{{ prediction_text }}</h3></div>
+    {% endif %}
+
+    {% if supportive_message %}
+        <div class="result"><p>{{ supportive_message }}</p></div>
+    {% endif %}
+</div>
+
+</body>
+</html>
